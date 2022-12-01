@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -19,7 +20,13 @@ func sumSlice(sl []int) int {
 
 func main() {
 	// Read input file
-	inputFile := os.Args[1]
+	var inputFile string
+	var noOfOutputs int
+	flag.StringVar(&inputFile, "file", "input.txt", "Path to Inputfile")
+	flag.IntVar(&noOfOutputs, "elves", 1, "Number of top Elves to show")
+
+	flag.Parse()
+
 	file, err := os.Open(inputFile)
 	if err != nil {
 		log.Fatal(err)
@@ -57,5 +64,8 @@ func main() {
 	})
 
 	// Return the highest Calorie Count
-	fmt.Println(cals[len(cals)-1])
+	fmt.Println("Top Elves")
+	fmt.Println(cals[len(cals)-noOfOutputs:])
+	fmt.Println("Sum of Top Elves")
+	fmt.Println(sumSlice(cals[len(cals)-noOfOutputs:]))
 }
