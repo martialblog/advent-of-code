@@ -9,21 +9,59 @@ import (
 	"strings"
 )
 
+var resultsMap = map[string]string{
+	"A": "Rock",
+	"B": "Paper",
+	"C": "Scissors",
+	"X": "Rock",
+	"Y": "Paper",
+	"Z": "Scissors",
+}
+
+func chooseAnswer(results []string) string {
+	// X means you need to lose,
+	// Y means you need to end the round in a draw
+	// Z means you need to win.
+	resultOther := resultsMap[results[0]]
+
+	switch results[1] {
+	case "X":
+		switch resultOther {
+		case "Rock":
+			return "C"
+		case "Paper":
+			return "A"
+		case "Scissors":
+			return "B"
+		}
+	case "Y":
+		switch resultOther {
+		case "Rock":
+			return "A"
+		case "Paper":
+			return "B"
+		case "Scissors":
+			return "C"
+		}
+	case "Z":
+		switch resultOther {
+		case "Rock":
+			return "B"
+		case "Paper":
+			return "C"
+		case "Scissors":
+			return "A"
+		}
+	}
+	return ""
+}
+
 func calculateScore(results []string) int {
 	// The score for a single round is the score for the shape you selected
 	// (1 for Rock, 2 for Paper, and 3 for Scissors)
 	// plus the score for the outcome of the round (0 if you lost, 3 if the round was a draw, and 6 if you won).
 
 	var score int
-
-	resultsMap := map[string]string{
-		"A": "Rock",
-		"B": "Paper",
-		"C": "Scissors",
-		"X": "Rock",
-		"Y": "Paper",
-		"Z": "Scissors",
-	}
 
 	scoreMap := map[string]int{
 		"Rock":     1,
@@ -99,6 +137,9 @@ func main() {
 
 	// Read the input file
 	var inputFile string
+	var strategy bool
+
+	flag.BoolVar(&strategy, "strategy", false, "Use second col to choose answer")
 	flag.StringVar(&inputFile, "file", "input.txt", "Path to Inputfile")
 
 	flag.Parse()
@@ -116,9 +157,14 @@ func main() {
 
 	for scanner.Scan() {
 		r := scanner.Text()
-		result := strings.Split(r, " ")
+		results := strings.Split(r, " ")
 
-		score := calculateScore(result)
+		// Use the second col to select answer
+		if strategy {
+			results[1] = chooseAnswer(results)
+		}
+
+		score := calculateScore(results)
 		finalScore += score
 	}
 
