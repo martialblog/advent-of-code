@@ -54,10 +54,16 @@ func main() {
 	// Initialize Slices
 	var finalPrio int
 	var prio int
+	var elves []string
 
+	// Part 1
 	for scanner.Scan() {
 		prio = 0
 		r := scanner.Text()
+
+		// For part 2
+		elves = append(elves, r)
+
 		// Length of the content
 		l := len([]rune(r))
 		compA := r[0 : l/2]
@@ -75,5 +81,23 @@ func main() {
 	}
 
 	// Final Score
+	// Part 1
 	fmt.Println(finalPrio)
+
+	// Part 2
+	prio = 0
+	finalPrio = 0
+
+	for idx, e := range elves {
+		// Every third elve
+		if idx%3 == 2 {
+			inBoth := findCharsinBoth(e, elves[idx-1])
+			inAllThree := findCharsinBoth(strings.Join(inBoth[:], ""), elves[idx-2])
+			finalPrio += alphaMap[inAllThree[0]]
+		}
+	}
+	// Final Score
+	// Part 2
+	fmt.Println(finalPrio)
+
 }
